@@ -1,0 +1,6 @@
+google:
+  storage:
+    project-id: ${GOOGLE_STORAGE_PROJECT_ID}
+    bucket-name: ${GOOGLE_STORAGE_BUCKET_NAME}
+    credentials: ${GOOGLE_APPLICATION_CREDENTIALS}
+

@@ -40,14 +40,3 @@ Ensure that backups are encrypted during the upload process. Maintain detailed l
 
 Implement a monitoring system to track cloud storage space, associated costs, and solution performance. Ensure the solution is scalable.
 
-## Implementation
-
-Follow the instructions below to implement the solution:
-
-1. Configure environment variables and credentials required for [Google Cloud Storage (GCS)](https://cloud.google.com/storage).
-2. Develop the backup agent using Java with Spring Boot.
-3. Schedule the execution of the backup agent using the operating system's scheduling tool.
-
-## Contribution
-
-Contributions are welcome. Please open issues and pull requests for improvements, bug fixes, or new features.
