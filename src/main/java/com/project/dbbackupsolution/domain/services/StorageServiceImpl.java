@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class StorageServiceImpl implements StorageService {
@@ -42,11 +41,12 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public void uploadFile(MultipartFile file) throws IOException {
-        BlobId blobId = BlobId.of(storageConfig.getBucketName(), Objects.requireNonNull(file.getOriginalFilename()));
+        String fullPath = storageConfig.getBackupPath() + file.getOriginalFilename();
+        BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                 .setContentType(file.getContentType())
                 .build();
-        Blob blob = storage.create(blobInfo, file.getBytes());
+        storage.create(blobInfo, file.getBytes());
     }
 
     @Override
