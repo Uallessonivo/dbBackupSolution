@@ -1,4 +1,4 @@
-package com.project.dbbackupsolution.config;
+package com.project.dbbackupsolution.configuration;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-public class StorageConfig {
+public class LoadGoogleStorageConfigs {
     @Value("${google.storage.project-id}")
     private String projectId;
     @Value("${google.storage.bucket-name}")
