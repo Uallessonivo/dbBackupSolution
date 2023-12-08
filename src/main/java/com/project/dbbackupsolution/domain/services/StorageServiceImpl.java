@@ -5,6 +5,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import com.project.dbbackupsolution.config.StorageConfig;
 import com.project.dbbackupsolution.domain.exceptions.DomainException;
+import com.project.dbbackupsolution.domain.exceptions.FileBackupException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
@@ -13,8 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class StorageServiceImpl implements StorageService {
@@ -40,13 +43,56 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public void uploadFile(MultipartFile file) throws IOException {
-        String fullPath = storageConfig.getBackupPath() + file.getOriginalFilename();
-        BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
-                .setContentType(file.getContentType())
-                .build();
-        storage.create(blobInfo, file.getBytes());
+    public void uploadFile(MultipartFile file) {
+        try {
+            String fullPath = storageConfig.getBackupPath() + file.getOriginalFilename();
+            BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+                    .setContentType(file.getContentType())
+                    .build();
+
+            storage.create(blobInfo, file.getBytes());
+        } catch (Exception e) {
+            throw new FileBackupException("Error occurred while backing up file: ", file.getOriginalFilename());
+        }
+    }
+
+    @Override
+    public void backupFiles(MultipartFile[] files) {
+        List<String> failedFiles = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            try {
+                String fileName = Objects.requireNonNull(file.getOriginalFilename(), "Filename cannot be null");
+                String extension = getFileExtension(fileName);
+
+                LocalDate currentDate = LocalDate.now();
+                int month = currentDate.getMonthValue();
+                int year = currentDate.getYear();
+
+                String fullPath = String.format("%s/%d%d/%s", extension, month, year, fileName);
+                BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
+                BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+                        .setContentType(file.getContentType())
+                        .build();
+
+                storage.create(blobInfo, file.getBytes());
+            } catch (Exception e) {
+                failedFiles.add(file.getOriginalFilename());
+            }
+        }
+
+        if (!failedFiles.isEmpty()) {
+            throw new FileBackupException("Error occurred while backing up some files", failedFiles);
+        }
+    }
+
+    private String getFileExtension(String fileName) {
+        int index = fileName.lastIndexOf('.');
+        if (index > 0) {
+            return fileName.substring(index + 1);
+        }
+        return "";
     }
 
     @Override

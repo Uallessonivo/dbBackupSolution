@@ -14,5 +14,5 @@ public class StorageConfig {
     private String bucketName;
     @Value("${google.storage.credentials}")
     private String credentials;
-    private String backupPath = "backup/";
+    private final String backupPath = "backup/";
 }

@@ -34,6 +34,12 @@ public class FileController {
         return ResponseEntity.ok("File uploaded successfully");
     }
 
+    @PostMapping("/backup")
+    public ResponseEntity<String> backupFiles(@RequestParam MultipartFile[] files) throws IOException {
+        storageService.backupFiles(files);
+        return ResponseEntity.ok("Files backed up successfully");
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteFile(@RequestParam String fileName) {
         boolean deleted = storageService.deleteFile(fileName);
