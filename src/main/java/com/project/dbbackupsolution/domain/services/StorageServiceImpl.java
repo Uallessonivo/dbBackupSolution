@@ -3,6 +3,7 @@ package com.project.dbbackupsolution.domain.services;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.*;
 import com.project.dbbackupsolution.configuration.LoadGoogleStorageConfigs;
+import com.project.dbbackupsolution.domain.exceptions.DomainException;
 import com.project.dbbackupsolution.domain.exceptions.FileBackupException;
 import com.project.dbbackupsolution.infrastructure.GoogleStorage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,14 +82,71 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public boolean deleteFile(String fileName) {
-        Blob blob = storage.get(storageConfig.getBucketName(), fileName);
-        return blob.delete();
+        try {
+            Blob blob = storage.get(storageConfig.getBucketName(), fileName);
+            return blob.delete();
+        } catch (Exception e) {
+            throw new DomainException("Error occurred while deleting file: " + fileName);
+        }
+    }
+
+    @Override
+    public void deleteOldFiles(int numberOfDays) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate daysAgo = currentDate.minusDays(numberOfDays);
+        List<String> failedFiles = new ArrayList<>();
+
+        Page<Blob> blobs = storage.list(storageConfig.getBucketName());
+        for (Blob blob : blobs.iterateAll()) {
+            LocalDate blobCreationDate = blob.getCreateTimeOffsetDateTime().toLocalDate();
+
+            if (blobCreationDate.isBefore(daysAgo)) {
+                try {
+                    blob.delete();
+                } catch (Exception e) {
+                    failedFiles.add(blob.getName());
+                }
+            }
+        }
+
+        if (!failedFiles.isEmpty()) {
+            throw new FileBackupException("Error occurred while deleting some files", failedFiles);
+        }
+    }
+
+    @Override
+    public void deleteAllFilesBySuffix(String suffix) {
+        List<String> failedFiles = new ArrayList<>();
+        if (!suffix.startsWith(".")) {
+            suffix = "." + suffix;
+        }
+
+        Page<Blob> blobs = storage.list(storageConfig.getBucketName());
+        for (Blob blob : blobs.iterateAll()) {
+            String fileName = blob.getName();
+            if (fileName.endsWith(suffix)) {
+                try {
+                    blob.delete();
+                } catch (Exception e) {
+                    failedFiles.add(fileName);
+                }
+            }
+        }
+
+        if (!failedFiles.isEmpty()) {
+            throw new FileBackupException("Error occurred while deleting some files", failedFiles);
+        }
     }
 
     @Override
     public ByteArrayResource downloadFile(String fileName) {
-        Blob blob = storage.get(storageConfig.getBucketName(), fileName);
-        return new ByteArrayResource(blob.getContent());
+        try {
+            Blob blob = storage.get(storageConfig.getBucketName(), fileName);
+            byte[] content = blob.getContent();
+            return new ByteArrayResource(content);
+        } catch (Exception e) {
+            throw new DomainException("Error occurred while downloading file: " + fileName);
+        }
     }
 
     @Override
