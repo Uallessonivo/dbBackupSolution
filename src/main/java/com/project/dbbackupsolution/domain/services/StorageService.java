@@ -9,7 +9,7 @@ import java.util.List;
 public interface StorageService {
     void uploadFile(MultipartFile file) throws IOException;
     void backupFiles(MultipartFile[] files) throws IOException;
-    boolean deleteFile(String fileName);
+    void deleteFile(String fileName);
     void deleteOldFiles(int numberOfDays);
     void deleteAllFilesBySuffix(String suffix);
     ByteArrayResource downloadFile(String fileName);

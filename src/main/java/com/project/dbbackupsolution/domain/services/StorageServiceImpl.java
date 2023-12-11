@@ -81,10 +81,10 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public boolean deleteFile(String fileName) {
+    public void deleteFile(String fileName) {
         try {
             Blob blob = storage.get(storageConfig.getBucketName(), fileName);
-            return blob.delete();
+            blob.delete();
         } catch (Exception e) {
             throw new DomainException("Error occurred while deleting file: " + fileName);
         }
