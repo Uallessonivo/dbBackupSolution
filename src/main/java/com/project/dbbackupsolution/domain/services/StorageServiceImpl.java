@@ -28,6 +28,25 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public void moveFile(String fileName, String destinationPath) {
+        try {
+            Blob file = copyObjectFromBucket(fileName, destinationPath);
+            file.delete();
+        } catch (Exception e) {
+            throw new DomainException("Error while moving file ", e.getCause());
+        }
+    }
+
+    @Override
+    public void copyFile(String fileName, String destinationPath) {
+        try {
+            copyObjectFromBucket(fileName, destinationPath);
+        } catch (Exception e) {
+            throw new DomainException("Error while copying file ", e.getCause());
+        }
+    }
+
+    @Override
     public void uploadFile(MultipartFile file) {
         try {
             String fullPath = storageConfig.getBackupPath() + file.getOriginalFilename();
@@ -72,21 +91,13 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
-    private String getFileExtension(String fileName) {
-        int index = fileName.lastIndexOf('.');
-        if (index > 0) {
-            return fileName.substring(index + 1);
-        }
-        return "";
-    }
-
     @Override
     public void deleteFile(String fileName) {
         try {
             Blob blob = storage.get(storageConfig.getBucketName(), fileName);
             blob.delete();
         } catch (Exception e) {
-            throw new DomainException("Error occurred while deleting file: " + fileName);
+            throw new FileBackupException("Error occurred while deleting file: ", fileName);
         }
     }
 
@@ -141,8 +152,8 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public ByteArrayResource downloadFile(String fileName) {
         try {
-            Blob blob = storage.get(storageConfig.getBucketName(), fileName);
-            byte[] content = blob.getContent();
+            Blob file = searchObject(fileName);
+            byte[] content = file.getContent();
             return new ByteArrayResource(content);
         } catch (Exception e) {
             throw new DomainException("Error occurred while downloading file: " + fileName);
@@ -157,5 +168,45 @@ public class StorageServiceImpl implements StorageService {
             list.add(blob.getName());
         }
         return list;
+    }
+
+    private String getFileExtension(String fileName) {
+        int index = fileName.lastIndexOf('.');
+        if (index > 0) {
+            return fileName.substring(index + 1);
+        }
+        return "";
+    }
+
+    private Blob searchObject(String fileName) {
+        Blob object = null;
+        Page<Blob> blobs = storage.list(storageConfig.getBucketName());
+        for (Blob blob : blobs.iterateAll()) {
+            if (blob.getName().endsWith(fileName)) {
+                object = blob;
+                break;
+            }
+        }
+
+        if (object == null) {
+            throw new DomainException("File not found");
+        }
+
+        return object;
+    }
+
+    private Blob copyObjectFromBucket(String fileName, String destinationPath) {
+        Blob file = searchObject(fileName);
+
+        String destination = String.format("%s/%s", destinationPath, fileName);
+        BlobId source = BlobId.of(storageConfig.getBucketName(), file.getName());
+        BlobId target = BlobId.of(storageConfig.getBucketName(), destination);
+
+        storage.copy(Storage.CopyRequest.newBuilder()
+                .setSource(source)
+                .setTarget(target)
+                .build());
+
+        return file;
     }
 }
