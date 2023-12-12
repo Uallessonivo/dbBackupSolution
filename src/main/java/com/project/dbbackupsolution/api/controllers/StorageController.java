@@ -38,7 +38,7 @@ public class StorageController {
             storageService.uploadFile(file);
             return ResponseEntity.ok("File uploaded successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred while uploading file");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class StorageController {
             storageService.backupFiles(files);
             return ResponseEntity.ok("Files backed up successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred while backing up files");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -58,27 +58,27 @@ public class StorageController {
             storageService.deleteFile(fileName);
             return ResponseEntity.ok("File deleted successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred while deleting file");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete-old-files")
     public ResponseEntity<String> deleteOldFile(@RequestParam int numberOfDays) {
         try {
             storageService.deleteOldFiles(numberOfDays);
             return ResponseEntity.ok("Files deleted successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred while deleting files");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete-by-suffix")
     public ResponseEntity<String> deleteAllFileBySuffix(@RequestParam String suffix) {
         try {
             storageService.deleteAllFilesBySuffix(suffix);
             return ResponseEntity.ok("Files deleted successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred while deleting files");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -92,6 +92,26 @@ public class StorageController {
                     .body(resource);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("move-file")
+    public ResponseEntity<String> moveFile(@RequestParam String fileName, @RequestParam String destination) {
+        try {
+            storageService.moveFile(fileName, destination);
+            return ResponseEntity.ok("File moved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("copy-file")
+    public ResponseEntity<String> copyFile(@RequestParam String fileName, @RequestParam String destination) {
+        try {
+            storageService.copyFile(fileName, destination);
+            return ResponseEntity.ok("File copied successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
