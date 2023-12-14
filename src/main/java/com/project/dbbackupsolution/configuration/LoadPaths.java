@@ -8,10 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Configuration
 public class LoadPaths {
-    @Value("${BACKUP_PATH}")
+    @Value("${server.storage.backup-path}")
     private String BACKUP_PATH;
-    @Value("${RESTORE_PATH}")
+    @Value("${server.storage.restore-path}")
     private String RESTORE_PATH;
-    @Value("${LOG_PATH}")
-    private String LOG_PATH;
 }

@@ -3,6 +3,9 @@ package com.project.dbbackupsolution.domain.services;
 import com.project.dbbackupsolution.configuration.LoadPaths;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.List;
+
 @Service
 public class FileServiceImpl implements FileService {
     private final LoadPaths loadPaths;
@@ -12,17 +15,15 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void extractFiles(String path, String fileExtension) {
+    public List<File> extractFiles(String path, String fileExtension) {
+        return null;
+    }
+
+    private void extractMetadata(String path, String fileExtension) {
 
     }
 
-    @Override
-    public void extractMetadata(String path, String fileExtension) {
-
-    }
-
-    @Override
-    public void compressFiles(String path, String fileExtension) {
+    private void compressFiles(String path, String fileExtension) {
 
     }
 }

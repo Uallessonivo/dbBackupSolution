@@ -4,3 +4,8 @@ google:
     bucket-name: ${GOOGLE_STORAGE_BUCKET_NAME}
     credentials: ${GOOGLE_APPLICATION_CREDENTIALS}
 
+server:
+  storage:
+    backup-path: ${SERVER_STORAGE_BACKUP_PATH}
+    restore-path: ${SERVER_STORAGE_RESTORE_PATH}
+
