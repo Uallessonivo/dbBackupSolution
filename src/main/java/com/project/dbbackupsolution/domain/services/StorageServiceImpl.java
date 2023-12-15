@@ -4,7 +4,7 @@ import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.*;
 import com.project.dbbackupsolution.configuration.LoadGoogleStorageConfigs;
 import com.project.dbbackupsolution.domain.exceptions.DomainException;
-import com.project.dbbackupsolution.domain.exceptions.FileBackupException;
+import com.project.dbbackupsolution.domain.exceptions.FileException;
 import com.project.dbbackupsolution.infrastructure.GoogleStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -57,7 +57,7 @@ public class StorageServiceImpl implements StorageService {
 
             storage.create(blobInfo, file.getBytes());
         } catch (Exception e) {
-            throw new FileBackupException("Error occurred while backing up file: ", file.getOriginalFilename());
+            throw new FileException("Error occurred while backing up file: ", file.getOriginalFilename());
         }
     }
 
@@ -87,7 +87,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         if (!failedFiles.isEmpty()) {
-            throw new FileBackupException("Error occurred while backing up some files", failedFiles);
+            throw new FileException("Error occurred while backing up some files", failedFiles);
         }
     }
 
@@ -97,7 +97,7 @@ public class StorageServiceImpl implements StorageService {
             Blob blob = storage.get(storageConfig.getBucketName(), fileName);
             blob.delete();
         } catch (Exception e) {
-            throw new FileBackupException("Error occurred while deleting file: ", fileName);
+            throw new FileException("Error occurred while deleting file: ", fileName);
         }
     }
 
@@ -121,7 +121,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         if (!failedFiles.isEmpty()) {
-            throw new FileBackupException("Error occurred while deleting some files", failedFiles);
+            throw new FileException("Error occurred while deleting some files", failedFiles);
         }
     }
 
@@ -145,7 +145,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         if (!failedFiles.isEmpty()) {
-            throw new FileBackupException("Error occurred while deleting some files", failedFiles);
+            throw new FileException("Error occurred while deleting some files", failedFiles);
         }
     }
 
