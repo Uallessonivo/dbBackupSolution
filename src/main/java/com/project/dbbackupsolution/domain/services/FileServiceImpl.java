@@ -5,8 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -34,7 +39,8 @@ public class FileServiceImpl implements FileService {
 
         for (File file : listOfFiles) {
             if (file.isFile() && file.getName().endsWith(fileExtension)) {
-                filesWithDesiredExtension.add(file);
+                File compressedFile = compressFile(file);
+                filesWithDesiredExtension.add(compressedFile);
             }
         }
 
@@ -46,6 +52,32 @@ public class FileServiceImpl implements FileService {
     }
 
     private File compressFile(File file) {
-        return null;
+        String filePath = file.getAbsolutePath();
+
+        if (filePath.endsWith(".zip") || filePath.endsWith(".rar") || filePath.endsWith(".7z") || filePath.endsWith(".gz")) {
+            return file;
+        }
+
+        try (FileInputStream fis = new FileInputStream(file);
+             FileOutputStream fos = new FileOutputStream(filePath + ".zip");
+             ZipOutputStream zipOS = new ZipOutputStream(fos)) {
+
+            ZipEntry zipEntry = new ZipEntry(file.getName());
+            zipOS.putNextEntry(zipEntry);
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len=fis.read(buffer)) != -1) {
+                zipOS.write(buffer, 0, len);
+            }
+
+            zipOS.closeEntry();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to compress file", e);
+        }
+
+        file.delete();
+
+        return new File(filePath + ".zip");
     }
 }
