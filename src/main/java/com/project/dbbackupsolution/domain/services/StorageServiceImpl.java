@@ -11,6 +11,9 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +61,36 @@ public class StorageServiceImpl implements StorageService {
             storage.create(blobInfo, file.getBytes());
         } catch (Exception e) {
             throw new FileException("Error occurred while backing up file: ", file.getOriginalFilename());
+        }
+    }
+
+    @Override
+    public void sendFile(File file, String fileExtension) {
+        if (file == null) {
+            throw new IllegalArgumentException("File or filename cannot be null");
+        }
+
+        try {
+            String fileName = file.getName();
+            LocalDate currentDate = LocalDate.now();
+            int month = currentDate.getMonthValue();
+            int year = currentDate.getYear();
+
+            String fullPath = String.format("%s/%d%d/%s", fileExtension, month, year, fileName);
+            BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+
+            byte[] bytesArray = new byte[(int) file.length()];
+            try (FileInputStream fis = new FileInputStream(file)) {
+                int bytesRead = fis.read(bytesArray);
+                if (bytesRead != file.length()) {
+                    throw new FileException("Failed to read the entire file: ", fileName);
+                }
+            }
+
+            storage.create(blobInfo, bytesArray);
+        } catch (IOException e) {
+            throw new FileException("Error occurred while sending file: ", file.getName());
         }
     }
 
