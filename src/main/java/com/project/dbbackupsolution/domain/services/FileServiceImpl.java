@@ -1,29 +1,31 @@
 package com.project.dbbackupsolution.domain.services;
 
-import com.project.dbbackupsolution.configuration.LoadPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
 public class FileServiceImpl implements FileService {
-    private final LoadPaths loadPaths;
+    private final StorageService storageService;
 
     @Autowired
-    public FileServiceImpl(LoadPaths loadPaths) {
-        this.loadPaths = loadPaths;
+    public FileServiceImpl(StorageService storageService) {
+        this.storageService = storageService;
     }
 
     @Override
-    public List<File> extractFiles(String path, String fileExtension) {
+    public void sendFileToStorage(String path, String fileExtension) {
         File folder = new File(path);
 
         if (!folder.exists()) {
@@ -33,51 +35,53 @@ public class FileServiceImpl implements FileService {
         File[] listOfFiles = folder.listFiles();
         List<File> filesWithDesiredExtension = new ArrayList<>();
 
-        if (listOfFiles == null) {
+        if (listOfFiles == null || listOfFiles.length == 0) {
             throw new IllegalArgumentException("The path does not contain any files");
         }
 
         for (File file : listOfFiles) {
             if (file.isFile() && file.getName().endsWith(fileExtension)) {
-                File compressedFile = compressFile(file);
-                filesWithDesiredExtension.add(compressedFile);
+                filesWithDesiredExtension.add(file);
             }
         }
 
-        return filesWithDesiredExtension;
-    }
+        File compressedFiles = compressFiles(filesWithDesiredExtension);
+        storageService.sendFile(compressedFiles, fileExtension);
 
-    private void extractMetadata(String path, String fileExtension) {
-
-    }
-
-    private File compressFile(File file) {
-        String filePath = file.getAbsolutePath();
-
-        if (filePath.endsWith(".zip") || filePath.endsWith(".rar") || filePath.endsWith(".7z") || filePath.endsWith(".gz")) {
-            return file;
+        if (!compressedFiles.delete()) {
+            throw new RuntimeException("Failed to delete compressed files");
         }
+    }
 
-        try (FileInputStream fis = new FileInputStream(file);
-             FileOutputStream fos = new FileOutputStream(filePath + ".zip");
+    private File compressFiles(List<File> files) {
+        LocalDate currentDate = LocalDate.now();
+        int month = currentDate.getMonthValue();
+        int year = currentDate.getYear();
+
+        String zipFileName = "backup-" + month + "-" + year + ".zip";
+        try (FileOutputStream fos = new FileOutputStream(zipFileName);
              ZipOutputStream zipOS = new ZipOutputStream(fos)) {
 
-            ZipEntry zipEntry = new ZipEntry(file.getName());
-            zipOS.putNextEntry(zipEntry);
+            for (File file : files) {
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    ZipEntry zipEntry = new ZipEntry(file.getName());
+                    zipOS.putNextEntry(zipEntry);
 
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len=fis.read(buffer)) != -1) {
-                zipOS.write(buffer, 0, len);
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = fis.read(buffer)) != -1) {
+                        zipOS.write(buffer, 0, len);
+                    }
+
+                    zipOS.closeEntry();
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to add file to zip", e);
+                }
             }
-
-            zipOS.closeEntry();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to compress file", e);
+            throw new RuntimeException("Failed to compress files", e);
         }
 
-        file.delete();
-
-        return new File(filePath + ".zip");
+        return new File(zipFileName);
     }
 }
