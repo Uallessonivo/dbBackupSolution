@@ -72,11 +72,7 @@ public class StorageServiceImpl implements StorageService {
 
         try {
             String fileName = file.getName();
-            LocalDate currentDate = LocalDate.now();
-            int month = currentDate.getMonthValue();
-            int year = currentDate.getYear();
-
-            String fullPath = String.format("%s/%d%d/%s", fileExtension, month, year, fileName);
+            String fullPath = String.format("%s/%s/%s", fileExtension, getCurrentMonthAndYear(), fileName);
             BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
@@ -102,12 +98,7 @@ public class StorageServiceImpl implements StorageService {
             try {
                 String fileName = Objects.requireNonNull(file.getOriginalFilename(), "Filename cannot be null");
                 String extension = getFileExtension(fileName);
-
-                LocalDate currentDate = LocalDate.now();
-                int month = currentDate.getMonthValue();
-                int year = currentDate.getYear();
-
-                String fullPath = String.format("%s/%d%d/%s", extension, month, year, fileName);
+                String fullPath = String.format("%s/%s/%s", extension, getCurrentMonthAndYear(), fileName);
                 BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
                 BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                         .setContentType(file.getContentType())
@@ -241,5 +232,12 @@ public class StorageServiceImpl implements StorageService {
                 .build());
 
         return file;
+    }
+
+    private String getCurrentMonthAndYear() {
+        LocalDate currentDate = LocalDate.now();
+        int month = currentDate.getMonthValue();
+        int year = currentDate.getYear();
+        return String.format("%d%d", month, year);
     }
 }
