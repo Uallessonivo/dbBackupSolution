@@ -15,7 +15,7 @@ public class FileController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendFile(@RequestBody FileRequest fileRequest) {
+    public ResponseEntity<String> sendFiles(@RequestBody FileRequest fileRequest) {
         try {
             fileService.sendFileToStorage(fileRequest.getPath(), fileRequest.getFileExtension());
             return ResponseEntity.ok("Files sent successfully");
