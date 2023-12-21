@@ -1,6 +1,5 @@
 package com.project.dbbackupsolution.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,7 +16,6 @@ import java.util.zip.ZipOutputStream;
 public class FileServiceImpl implements FileService {
     private final StorageService storageService;
 
-    @Autowired
     public FileServiceImpl(StorageService storageService) {
         this.storageService = storageService;
     }
@@ -58,7 +56,7 @@ public class FileServiceImpl implements FileService {
 
         String zipFileName = "backup-" + month + "-" + year + ".zip";
         try (FileOutputStream fos = new FileOutputStream(zipFileName);
-             ZipOutputStream zipOS = new ZipOutputStream(fos)) {
+                ZipOutputStream zipOS = new ZipOutputStream(fos)) {
 
             for (File file : files) {
                 try (FileInputStream fis = new FileInputStream(file)) {

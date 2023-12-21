@@ -33,3 +33,6 @@ build/
 
 ## Configs ##
 *.json
+
+## Environment ##
+.env

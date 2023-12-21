@@ -6,7 +6,6 @@ import com.project.dbbackupsolution.configuration.LoadGoogleStorageConfigs;
 import com.project.dbbackupsolution.domain.exceptions.DomainException;
 import com.project.dbbackupsolution.domain.exceptions.FileException;
 import com.project.dbbackupsolution.infrastructure.GoogleStorage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +23,6 @@ public class StorageServiceImpl implements StorageService {
     private final LoadGoogleStorageConfigs storageConfig;
     private final Storage storage;
 
-    @Autowired
     public StorageServiceImpl(LoadGoogleStorageConfigs storageConfig, GoogleStorage googleStorage) {
         this.storageConfig = storageConfig;
         this.storage = googleStorage.getStorage();

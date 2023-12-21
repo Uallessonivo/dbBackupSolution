@@ -1,7 +1,6 @@
 package com.project.dbbackupsolution.api.controllers;
 
 import com.project.dbbackupsolution.domain.services.StorageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,7 +16,6 @@ import java.util.List;
 public class StorageController {
     private final StorageService storageService;
 
-    @Autowired
     public StorageController(StorageService storageService) {
         this.storageService = storageService;
     }
