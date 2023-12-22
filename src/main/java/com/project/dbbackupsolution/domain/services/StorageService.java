@@ -8,13 +8,22 @@ import java.util.List;
 
 public interface StorageService {
     void moveFile(String fileName, String destinationPath);
+
     void copyFile(String fileName, String destinationPath);
+
     void uploadFile(MultipartFile file);
+
     void sendFile(File file, String fileExtension);
+
     void backupFiles(MultipartFile[] files);
+
     void deleteFile(String fileName);
+
     void deleteOldFiles(int numberOfDays);
+
     void deleteAllFilesBySuffix(String suffix);
+
     ByteArrayResource downloadFile(String fileName);
+
     List<String> listOfFiles();
 }
