@@ -8,4 +8,9 @@ public interface SchedulerService {
     void schedulerFileCopy(String sourcePath, String destinationPath, String cronExpression);
 
     void schedulerFilesUpload(List<String> sourcePath, List<String> fileExtension, String cronExpression);
+
+    void schedulerDeleteOldFiles(int numberOfDays, String cronExpression);
+
+    void schedulerDeleteAllBySuffix(String fileExtension, String cronExpression);
+
 }
