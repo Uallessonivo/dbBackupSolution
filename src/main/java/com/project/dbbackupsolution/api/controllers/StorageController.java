@@ -73,7 +73,7 @@ public class StorageController {
     @DeleteMapping("/delete-by-suffix")
     public ResponseEntity<String> deleteAllFileBySuffix(@RequestParam String suffix) {
         try {
-            storageService.deleteAllFilesBySuffix(suffix);
+            storageService.deleteAllFilesByExtension(suffix);
             return ResponseEntity.ok("Files deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
