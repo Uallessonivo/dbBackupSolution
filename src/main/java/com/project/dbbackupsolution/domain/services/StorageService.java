@@ -21,7 +21,7 @@ public interface StorageService {
 
     void deleteOldFiles(int numberOfDays);
 
-    void deleteAllFilesBySuffix(String suffix);
+    void deleteAllFilesByExtension(String fileExtension);
 
     ByteArrayResource downloadFile(String fileName);
 

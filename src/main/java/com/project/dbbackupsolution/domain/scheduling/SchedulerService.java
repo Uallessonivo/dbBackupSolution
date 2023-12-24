@@ -11,5 +11,5 @@ public interface SchedulerService {
 
     void schedulerDeleteOldFiles(int numberOfDays, String cronExpression);
 
-    void schedulerDeleteAllBySuffix(String fileExtension, String cronExpression);
+    void schedulerDeleteAllByExtension(String fileExtension, String cronExpression);
 }

@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +82,7 @@ public class StorageServiceImpl implements StorageService {
             }
 
             storage.create(blobInfo, bytesArray);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new FileException("Error occurred while sending file: ", file.getName());
         }
     }
@@ -148,16 +147,16 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public void deleteAllFilesBySuffix(String suffix) {
+    public void deleteAllFilesByExtension(String fileExtension) {
         List<String> failedFiles = new ArrayList<>();
-        if (!suffix.startsWith(".")) {
-            suffix = "." + suffix;
+        if (!fileExtension.startsWith(".")) {
+            fileExtension = "." + fileExtension;
         }
 
         Page<Blob> blobs = storage.list(storageConfig.getBucketName());
         for (Blob blob : blobs.iterateAll()) {
             String fileName = blob.getName();
-            if (fileName.endsWith(suffix)) {
+            if (fileName.endsWith(fileExtension)) {
                 try {
                     blob.delete();
                 } catch (Exception e) {
