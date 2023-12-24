@@ -21,13 +21,13 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Override
     @Scheduled(cron = "#{cronExpression}")
     public void schedulerFileMove(String sourcePath, String destinationPath, String cronExpression) {
-        storageService.moveFile(cronExpression, destinationPath);
+        storageService.moveFile(sourcePath, destinationPath);
     }
 
     @Override
     @Scheduled(cron = "#{cronExpression}")
     public void schedulerFileCopy(String sourcePath, String destinationPath, String cronExpression) {
-        storageService.copyFile(cronExpression, destinationPath);
+        storageService.copyFile(sourcePath, destinationPath);
     }
 
     @Override
