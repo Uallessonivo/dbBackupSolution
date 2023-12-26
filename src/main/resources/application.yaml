@@ -8,4 +8,3 @@ server:
   storage:
     backup-path: ${SERVER_STORAGE_BACKUP_PATH}
     restore-path: ${SERVER_STORAGE_RESTORE_PATH}
-
