@@ -1,10 +1,9 @@
 package com.project.dbbackupsolution.api.controllers;
 
 import com.project.dbbackupsolution.domain.scheduling.SchedulerManager;
+import com.project.dbbackupsolution.domain.scheduling.SchedulerService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.project.dbbackupsolution.domain.scheduling.SchedulerService;
 
 @RestController
 @RequestMapping("/api/scheduler")

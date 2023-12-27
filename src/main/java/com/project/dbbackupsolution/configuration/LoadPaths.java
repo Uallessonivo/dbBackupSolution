@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Configuration
 public class LoadPaths {
-    private String BACKUP_PATH;
-    private String RESTORE_PATH;
+    private final String BACKUP_PATH;
+    private final String RESTORE_PATH;
 
     public LoadPaths() {
         BACKUP_PATH = System.getenv("SERVER_STORAGE_BACKUP_PATH");

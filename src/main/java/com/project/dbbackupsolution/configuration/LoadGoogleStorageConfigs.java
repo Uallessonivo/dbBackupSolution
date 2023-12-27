@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Configuration
 public class LoadGoogleStorageConfigs {
-    private String projectId;
-    private String bucketName;
-    private String credentials;
+    private final String projectId;
+    private final String bucketName;
+    private final String credentials;
     private final String backupPath = "backup/";
 
     public LoadGoogleStorageConfigs() {
