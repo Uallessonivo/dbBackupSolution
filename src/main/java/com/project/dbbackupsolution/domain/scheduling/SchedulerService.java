@@ -1,6 +1,8 @@
 package com.project.dbbackupsolution.domain.scheduling;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 import com.project.dbbackupsolution.domain.models.SchedulerModel;
@@ -20,6 +22,7 @@ public class SchedulerService {
     private final TaskScheduler taskScheduler;
     private final SchedulerManager schedulerManager;
     private ScheduledFuture<?> scheduledTask;
+    private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
     public SchedulerService(StorageService storageService, FileService fileService, TaskScheduler taskScheduler, SchedulerManager schedulerManager) {
         this.storageService = storageService;
@@ -36,10 +39,12 @@ public class SchedulerService {
         }
     }
 
-    private void scheduledTask(SchedulerModel task) {
+    private ScheduledFuture<?> scheduledTask(SchedulerModel task) {
         Runnable runnableTask = createRunnableTask(task);
         CronTrigger cronTrigger = new CronTrigger(task.getCronExpression());
-        taskScheduler.schedule(runnableTask, cronTrigger);
+        ScheduledFuture<?> scheduledTask = taskScheduler.schedule(runnableTask, cronTrigger);
+        scheduledTasks.put(task.getTaskType(), scheduledTask);
+        return scheduledTask;
     }
 
     private Runnable createRunnableTask(SchedulerModel task) {
@@ -59,9 +64,17 @@ public class SchedulerService {
         };
     }
 
-    private void cancelTask() {
+    private void cancelScheduledTask(String taskType) {
+        ScheduledFuture<?> scheduledTask = scheduledTasks.get(taskType);
         if (scheduledTask != null) {
-            scheduledTask.cancel(false);
+            scheduledTask.cancel(true);
+            scheduledTasks.remove(taskType);
         }
+    }
+
+    public void rescheduleTask(SchedulerModel task) {
+        cancelScheduledTask(task.getTaskType());
+        task.setCronExpression(task.getCronExpression());
+        scheduledTasks.put(task.getTaskType(), scheduledTask(task));
     }
 }
