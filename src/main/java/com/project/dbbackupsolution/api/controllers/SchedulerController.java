@@ -3,10 +3,7 @@ package com.project.dbbackupsolution.api.controllers;
 import com.project.dbbackupsolution.domain.models.SchedulerModel;
 import com.project.dbbackupsolution.domain.scheduling.SchedulerManager;
 import com.project.dbbackupsolution.domain.scheduling.SchedulerService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/scheduler")
@@ -22,6 +19,7 @@ public class SchedulerController {
     @PostMapping("/save")
     public void saveSchedulerModel(@RequestBody SchedulerModel schedulerModel) {
         schedulerManager.saveSchedulerModel(schedulerModel);
+        schedulerService.updateSchedulesTasks(schedulerModel);
     }
 
     @PostMapping("/reschedule")

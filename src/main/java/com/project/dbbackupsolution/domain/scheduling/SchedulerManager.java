@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dbbackupsolution.domain.exceptions.DomainException;
 import com.project.dbbackupsolution.domain.models.SchedulerModel;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class SchedulerManager {
     public void saveSchedulerModel(SchedulerModel schedulerEntity) {
         ObjectMapper mapper = new ObjectMapper();

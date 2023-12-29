@@ -1,5 +1,6 @@
 package com.project.dbbackupsolution.configuration;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +11,8 @@ public class LoadPaths {
     private final String RESTORE_PATH;
 
     public LoadPaths() {
-        BACKUP_PATH = System.getenv("SERVER_STORAGE_BACKUP_PATH");
-        RESTORE_PATH = System.getenv("SERVER_STORAGE_RESTORE_PATH");
+        Dotenv dotenv = Dotenv.load();
+        BACKUP_PATH = dotenv.get("SERVER_STORAGE_BACKUP_PATH");
+        RESTORE_PATH = dotenv.get("SERVER_STORAGE_RESTORE_PATH");
     }
 }

@@ -34,16 +34,20 @@ public class SchedulerService {
     @PostConstruct
     public void init() {
         List<SchedulerModel> tasks = schedulerManager.getSavedSchedulerModels();
+        System.out.println("SchedulerService.init: " + tasks);
         for (SchedulerModel task : tasks) {
+            System.out.println("SchedulerService.init: " + task);
             scheduledTask(task);
         }
     }
 
     private ScheduledFuture<?> scheduledTask(SchedulerModel task) {
+        System.out.println("SchedulerService.scheduledTask: " + task);
         Runnable runnableTask = createRunnableTask(task);
         CronTrigger cronTrigger = new CronTrigger(task.getCronExpression());
         ScheduledFuture<?> scheduledTask = taskScheduler.schedule(runnableTask, cronTrigger);
         scheduledTasks.put(task.getTaskType(), scheduledTask);
+        System.out.println("SchedulerService.scheduledTask: " + scheduledTask + " " + task.getTaskType());
         return scheduledTask;
     }
 
@@ -74,7 +78,10 @@ public class SchedulerService {
 
     public void rescheduleTask(SchedulerModel task) {
         cancelScheduledTask(task.getTaskType());
-        task.setCronExpression(task.getCronExpression());
+        updateSchedulesTasks(task);
+    }
+
+    public void updateSchedulesTasks(SchedulerModel task) {
         scheduledTasks.put(task.getTaskType(), scheduledTask(task));
     }
 }

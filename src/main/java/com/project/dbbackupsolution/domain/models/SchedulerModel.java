@@ -1,14 +1,15 @@
 package com.project.dbbackupsolution.domain.models;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 public class SchedulerModel {
     private int numberOfDays;
     private String fileExtension;
@@ -18,4 +19,23 @@ public class SchedulerModel {
     private String destinationPath;
     private String cronExpression;
     private String taskType;
+
+    @JsonCreator
+    public SchedulerModel(@JsonProperty("numberOfDays") int numberOfDays,
+                          @JsonProperty("fileExtension") String fileExtension,
+                          @JsonProperty("fileExtensions") List<String> fileExtensions,
+                          @JsonProperty("sourcePath") String sourcePath,
+                          @JsonProperty("sourcePaths") List<String> sourcePaths,
+                          @JsonProperty("destinationPath") String destinationPath,
+                          @JsonProperty("cronExpression") String cronExpression,
+                          @JsonProperty("taskType") String taskType) {
+        this.numberOfDays = numberOfDays;
+        this.fileExtension = fileExtension;
+        this.fileExtensions = fileExtensions;
+        this.sourcePath = sourcePath;
+        this.sourcePaths = sourcePaths;
+        this.destinationPath = destinationPath;
+        this.cronExpression = cronExpression;
+        this.taskType = taskType;
+    }
 }
