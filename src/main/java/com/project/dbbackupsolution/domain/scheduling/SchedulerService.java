@@ -34,7 +34,6 @@ public class SchedulerService {
     @PostConstruct
     public void init() {
         List<SchedulerModel> tasks = schedulerManager.getSavedSchedulerModels();
-        System.out.println("SchedulerService.init: " + tasks);
         for (SchedulerModel task : tasks) {
             System.out.println("SchedulerService.init: " + task);
             scheduledTask(task);
@@ -42,7 +41,6 @@ public class SchedulerService {
     }
 
     private ScheduledFuture<?> scheduledTask(SchedulerModel task) {
-        System.out.println("SchedulerService.scheduledTask: " + task);
         Runnable runnableTask = createRunnableTask(task);
         CronTrigger cronTrigger = new CronTrigger(task.getCronExpression());
         ScheduledFuture<?> scheduledTask = taskScheduler.schedule(runnableTask, cronTrigger);
@@ -68,20 +66,19 @@ public class SchedulerService {
         };
     }
 
-    private void cancelScheduledTask(String taskType) {
-        ScheduledFuture<?> scheduledTask = scheduledTasks.get(taskType);
-        if (scheduledTask != null) {
-            scheduledTask.cancel(true);
-            scheduledTasks.remove(taskType);
-        }
-    }
-
     public void rescheduleTask(SchedulerModel task) {
-        cancelScheduledTask(task.getTaskType());
-        updateSchedulesTasks(task);
+        cancelAndRemoveScheduledTask(task.getTaskType());
+        scheduledTasks.put(task.getTaskType(), scheduledTask(task));
     }
 
     public void updateSchedulesTasks(SchedulerModel task) {
-        scheduledTasks.put(task.getTaskType(), scheduledTask(task));
+        rescheduleTask(task);
+    }
+
+    private void cancelAndRemoveScheduledTask(String taskType) {
+        ScheduledFuture<?> oldScheduledTask = scheduledTasks.remove(taskType);
+        if (oldScheduledTask != null) {
+            oldScheduledTask.cancel(true);
+        }
     }
 }
