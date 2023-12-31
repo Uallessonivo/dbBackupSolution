@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class SchedulerModel {
     private int numberOfDays;
     private String fileExtension;
@@ -18,7 +19,7 @@ public class SchedulerModel {
     private List<String> sourcePaths;
     private String destinationPath;
     private String cronExpression;
-    private String taskType;
+    private TaskType taskType;
 
     @JsonCreator
     public SchedulerModel(@JsonProperty("numberOfDays") int numberOfDays,
@@ -36,6 +37,6 @@ public class SchedulerModel {
         this.sourcePaths = sourcePaths;
         this.destinationPath = destinationPath;
         this.cronExpression = cronExpression;
-        this.taskType = taskType;
+        this.taskType = TaskType.valueOf(taskType);
     }
 }
