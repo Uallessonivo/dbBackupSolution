@@ -3,6 +3,7 @@ package com.project.dbbackupsolution.api.controllers;
 import com.project.dbbackupsolution.domain.models.SchedulerModel;
 import com.project.dbbackupsolution.domain.scheduling.SchedulerManager;
 import com.project.dbbackupsolution.domain.scheduling.SchedulerService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,13 +18,23 @@ public class SchedulerController {
     }
 
     @PostMapping("/save")
-    public void saveSchedulerModel(@RequestBody SchedulerModel schedulerModel) {
-        schedulerManager.saveSchedulerModel(schedulerModel);
-        schedulerService.updateSchedulesTasks(schedulerModel);
+    public ResponseEntity<String> saveSchedulerModel(@RequestBody SchedulerModel schedulerModel) {
+        try {
+            schedulerManager.saveSchedulerModel(schedulerModel);
+            schedulerService.updateSchedulesTasks(schedulerModel);
+            return ResponseEntity.ok("Scheduler model saved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/reschedule")
-    public void rescheduleSchedulerModel(@RequestBody SchedulerModel schedulerModel) {
-        schedulerService.rescheduleTask(schedulerModel);
+    public ResponseEntity<String> rescheduleSchedulerModel(@RequestBody SchedulerModel schedulerModel) {
+        try {
+            schedulerService.rescheduleTask(schedulerModel);
+            return ResponseEntity.ok("Scheduler model rescheduled successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
