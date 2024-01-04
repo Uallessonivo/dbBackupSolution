@@ -36,14 +36,13 @@ public class SchedulerManager {
         File file = new File("scheduler.json");
         List<SchedulerModel> tasks = new ArrayList<>();
 
-        if (file.exists()) {
-            try {
-                tasks = mapper.readValue(file, new TypeReference<>() {});
-            } catch (Exception e) {
-                throw new DomainException("Error while getting scheduler models", e);
-            }
+        if (file.length() == 0) {
+            return new ArrayList<>();
         }
-
-        return tasks;
+        try {
+            return mapper.readValue(file, new TypeReference<List<SchedulerModel>>() {});
+        } catch (Exception e) {
+            throw new DomainException("Error while getting scheduler models", e);
+        }
     }
 }

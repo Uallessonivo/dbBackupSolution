@@ -37,6 +37,6 @@ public class SchedulerModel {
         this.sourcePaths = sourcePaths;
         this.destinationPath = destinationPath;
         this.cronExpression = cronExpression;
-        this.taskType = TaskType.valueOf(taskType);
+        this.taskType = TaskType.valueOf(taskType.toUpperCase().replace(" ", "_"));
     }
 }

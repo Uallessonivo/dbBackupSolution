@@ -22,7 +22,6 @@ public class SchedulerService {
     private final FileService fileService;
     private final TaskScheduler taskScheduler;
     private final SchedulerManager schedulerManager;
-    private ScheduledFuture<?> scheduledTask;
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
     public SchedulerService(StorageService storageService, FileService fileService, TaskScheduler taskScheduler, SchedulerManager schedulerManager) {
@@ -35,9 +34,11 @@ public class SchedulerService {
     @PostConstruct
     public void init() {
         List<SchedulerModel> tasks = schedulerManager.getSavedSchedulerModels();
-        for (SchedulerModel task : tasks) {
-            System.out.println("SchedulerService.init: " + task);
-            scheduledTask(task);
+        if  (tasks != null && !tasks.isEmpty()) {
+            for (SchedulerModel task : tasks) {
+                System.out.println("SchedulerService.init: " + task);
+                scheduledTask(task);
+            }
         }
     }
 
