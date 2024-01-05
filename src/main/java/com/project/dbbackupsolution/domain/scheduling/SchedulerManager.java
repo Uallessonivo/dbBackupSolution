@@ -15,10 +15,9 @@ public class SchedulerManager {
     public void saveSchedulerModel(SchedulerModel schedulerEntity) {
         ObjectMapper mapper = new ObjectMapper();
         File file = new File("scheduler.json");
-
         try {
             List<SchedulerModel> tasks;
-            if (file.exists()) {
+            if (file.exists() && file.length() > 0) {
                 tasks = mapper.readValue(file, new TypeReference<>(){});
                 tasks.removeIf(task -> task.getTaskType().equals(schedulerEntity.getTaskType()));
             } else {

@@ -3,6 +3,7 @@ package com.project.dbbackupsolution.domain.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class SchedulerModel {
                           @JsonProperty("sourcePaths") List<String> sourcePaths,
                           @JsonProperty("destinationPath") String destinationPath,
                           @JsonProperty("cronExpression") String cronExpression,
-                          @JsonProperty("taskType") String taskType) {
+                          @NotNull @JsonProperty("taskType") String taskType) {
         this.numberOfDays = numberOfDays;
         this.fileExtension = fileExtension;
         this.fileExtensions = fileExtensions;
@@ -37,6 +38,6 @@ public class SchedulerModel {
         this.sourcePaths = sourcePaths;
         this.destinationPath = destinationPath;
         this.cronExpression = cronExpression;
-        this.taskType = TaskType.valueOf(taskType.toUpperCase().replace(" ", "_"));
+        this.taskType = TaskType.valueOf(taskType.toUpperCase());
     }
 }
