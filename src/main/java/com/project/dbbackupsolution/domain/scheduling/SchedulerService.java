@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import com.project.dbbackupsolution.domain.models.SchedulerModel;
 import com.project.dbbackupsolution.domain.models.TaskType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.project.dbbackupsolution.domain.services.StorageService;
 import javax.annotation.PostConstruct;
 
 @Service
+@Slf4j
 public class SchedulerService {
     private final StorageService storageService;
     private final FileService fileService;
@@ -36,7 +38,6 @@ public class SchedulerService {
         List<SchedulerModel> tasks = schedulerManager.getSavedSchedulerModels();
         if  (tasks != null && !tasks.isEmpty()) {
             for (SchedulerModel task : tasks) {
-                System.out.println("SchedulerService.init: " + task);
                 scheduledTask(task);
             }
         }
@@ -47,7 +48,7 @@ public class SchedulerService {
         CronTrigger cronTrigger = new CronTrigger(task.getCronExpression());
         ScheduledFuture<?> scheduledTask = taskScheduler.schedule(runnableTask, cronTrigger);
         scheduledTasks.put(String.valueOf(task.getTaskType()), scheduledTask);
-        System.out.println("SchedulerService.scheduledTask: " + scheduledTask + " " + task.getTaskType());
+        log.info("Scheduled task: {} , TaskType: {}", task, task.getTaskType());
         return scheduledTask;
     }
 
@@ -71,6 +72,7 @@ public class SchedulerService {
     public void rescheduleTask(SchedulerModel task) {
         cancelAndRemoveScheduledTask(String.valueOf(task.getTaskType()));
         scheduledTasks.put(String.valueOf(task.getTaskType()), scheduledTask(task));
+        log.warn("Rescheduled task: {} , TaskType: {}", task, task.getTaskType());
     }
 
     public void updateSchedulesTasks(SchedulerModel task) {
@@ -81,6 +83,7 @@ public class SchedulerService {
         ScheduledFuture<?> oldScheduledTask = scheduledTasks.remove(taskType);
         if (oldScheduledTask != null) {
             oldScheduledTask.cancel(true);
+            log.warn("Canceled task: {} , TaskType: {}", oldScheduledTask, taskType);
         }
     }
 }
