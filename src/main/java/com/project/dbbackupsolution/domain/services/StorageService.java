@@ -15,6 +15,7 @@ public interface StorageService {
     void deleteFile(String fileName);
     void deleteOldFiles(int numberOfDays);
     void deleteAllFilesByExtension(String fileExtension);
+    void deleteAllOldFilesByExtension(int numberOfDays, String fileExtension);
     ByteArrayResource downloadFile(String fileName);
     List<String> listOfFiles();
 }

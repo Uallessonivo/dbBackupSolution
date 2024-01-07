@@ -171,6 +171,36 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public void deleteAllOldFilesByExtension(int numberOfDays, String fileExtension) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate daysAgo = currentDate.minusDays(numberOfDays);
+
+        List<String> failedFiles = new ArrayList<>();
+        if (!fileExtension.startsWith(".")) {
+            fileExtension = "." + fileExtension;
+        }
+
+        Page<Blob> blobs = storage.list(storageConfig.getBucketName());
+        for (Blob blob : blobs.iterateAll()) {
+            String fileName = blob.getName();
+            LocalDate blobCreationDate = blob.getCreateTimeOffsetDateTime().toLocalDate();
+
+            if (fileName.endsWith(fileExtension) && blobCreationDate.isBefore(daysAgo)) {
+                try {
+                    blob.delete();
+                } catch (Exception e) {
+                    failedFiles.add(fileName);
+                }
+            }
+        }
+
+        if (!failedFiles.isEmpty()) {
+            throw new FileException("Error occurred while deleting some files", failedFiles);
+        }
+    }
+
+
+    @Override
     public ByteArrayResource downloadFile(String fileName) {
         try {
             Blob file = searchObject(fileName);

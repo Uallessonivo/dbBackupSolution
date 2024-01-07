@@ -70,10 +70,20 @@ public class StorageController {
         }
     }
 
-    @DeleteMapping("/delete-by-suffix")
-    public ResponseEntity<String> deleteAllFileBySuffix(@RequestParam String suffix) {
+    @DeleteMapping("/delete-by-extension")
+    public ResponseEntity<String> deleteAllFileBySuffix(@RequestParam String extension) {
         try {
-            storageService.deleteAllFilesByExtension(suffix);
+            storageService.deleteAllFilesByExtension(extension);
+            return ResponseEntity.ok("Files deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete-old-by-extension")
+    public ResponseEntity<String> deleteAllOldFileBySuffix(@RequestParam int numberOfDays, @RequestParam String extension) {
+        try {
+            storageService.deleteAllOldFilesByExtension(numberOfDays, extension);
             return ResponseEntity.ok("Files deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
