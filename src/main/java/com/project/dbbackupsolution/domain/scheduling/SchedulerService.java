@@ -65,6 +65,7 @@ public class SchedulerService {
             };
             case TaskType.DELETE_OLD_FILES -> () -> storageService.deleteOldFiles(task.getNumberOfDays());
             case TaskType.DELETE_ALL_BY_EXTENSION -> () -> storageService.deleteAllFilesByExtension(task.getFileExtension());
+            case TaskType.DELETE_ALL_OLD_BY_EXTENSION -> () -> storageService.deleteAllOldFilesByExtension(task.getNumberOfDays(), task.getFileExtension());
             default -> throw new IllegalStateException("Unexpected value: " + task.getTaskType());
         };
     }
