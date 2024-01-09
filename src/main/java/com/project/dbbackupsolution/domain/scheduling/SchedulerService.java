@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import com.project.dbbackupsolution.domain.models.SchedulerModel;
 import com.project.dbbackupsolution.domain.models.TaskType;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.project.dbbackupsolution.domain.services.FileService;
 import com.project.dbbackupsolution.domain.services.StorageService;
-
-import javax.annotation.PostConstruct;
 
 @Service
 @Slf4j

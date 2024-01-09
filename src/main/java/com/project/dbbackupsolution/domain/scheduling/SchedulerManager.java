@@ -18,7 +18,8 @@ public class SchedulerManager {
         try {
             List<SchedulerModel> tasks;
             if (file.exists() && file.length() > 0) {
-                tasks = mapper.readValue(file, new TypeReference<>(){});
+                tasks = mapper.readValue(file, new TypeReference<>() {
+                });
                 tasks.removeIf(task -> task.getTaskType().equals(schedulerEntity.getTaskType()));
             } else {
                 tasks = new ArrayList<>();
@@ -33,13 +34,13 @@ public class SchedulerManager {
     public List<SchedulerModel> getSavedSchedulerModels() {
         ObjectMapper mapper = new ObjectMapper();
         File file = new File("scheduler.json");
-        List<SchedulerModel> tasks = new ArrayList<>();
 
         if (file.length() == 0) {
             return new ArrayList<>();
         }
         try {
-            return mapper.readValue(file, new TypeReference<List<SchedulerModel>>() {});
+            return mapper.readValue(file, new TypeReference<List<SchedulerModel>>() {
+            });
         } catch (Exception e) {
             throw new DomainException("Error while getting scheduler models", e);
         }
