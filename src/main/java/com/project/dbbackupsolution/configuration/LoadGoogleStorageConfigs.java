@@ -17,5 +17,17 @@ public class LoadGoogleStorageConfigs {
         this.projectId = dotenv.get("GOOGLE_STORAGE_PROJECT_ID");
         this.bucketName = dotenv.get("GOOGLE_STORAGE_BUCKET_NAME");
         this.credentials = dotenv.get("GOOGLE_APPLICATION_CREDENTIALS");
+
+        if (this.projectId == null || this.projectId.isEmpty()) {
+            throw new RuntimeException("GOOGLE_STORAGE_PROJECT_ID not found in .env file");
+        }
+
+        if (this.bucketName == null || this.bucketName.isEmpty()) {
+            throw new RuntimeException("GOOGLE_STORAGE_BUCKET_NAME not found in .env file");
+        }
+
+        if (this.credentials == null || this.credentials.isEmpty()) {
+            throw new RuntimeException("GOOGLE_APPLICATION_CREDENTIALS not found in .env file");
+        }
     }
 }

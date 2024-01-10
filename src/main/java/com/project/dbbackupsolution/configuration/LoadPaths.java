@@ -14,5 +14,13 @@ public class LoadPaths {
         Dotenv dotenv = Dotenv.load();
         BACKUP_PATH = dotenv.get("SERVER_STORAGE_BACKUP_PATH");
         RESTORE_PATH = dotenv.get("SERVER_STORAGE_RESTORE_PATH");
+
+        if (BACKUP_PATH == null || BACKUP_PATH.isEmpty()) {
+            throw new RuntimeException("BACKUP_PATH not found in .env file");
+        }
+
+        if (RESTORE_PATH == null || RESTORE_PATH.isEmpty()) {
+            throw new RuntimeException("RESTORE_PATH not found in .env file");
+        }
     }
 }
