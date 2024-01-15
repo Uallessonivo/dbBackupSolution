@@ -1,7 +1,8 @@
 FROM node:lts AS runtime
 WORKDIR /app
+COPY package.json ./
 COPY pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install
 COPY . .
-RUN pnpm run build
+RUN npm install -g pnpm && npm install && pnpm install
+RUN pnpm build
 CMD ["pnpm", "start"]
