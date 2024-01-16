@@ -7,4 +7,6 @@ RUN mvn clean package
 FROM amazoncorretto:21
 WORKDIR /app
 COPY ./target/dbBackupSolution-0.0.1-SNAPSHOT.jar /app
+COPY ./src/main/resources/gcp_account_file.json /app/src/main/resources/gcp_account_file.json
+COPY ./.env /app
 ENTRYPOINT ["java","-jar","dbBackupSolution-0.0.1-SNAPSHOT.jar"]
