@@ -1,0 +1,27 @@
+<style>
+  h1 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 2.5em;
+  }
+
+  .text-gradient {
+    background: linear-gradient(45deg, #f3ec78, #af4261);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .instructions {
+    text-align: center;
+    color: #858585;
+    font-size: 1.2em;
+  }
+</style>
+
+<h1>
+  Olá! Bem-vindo à <span class="text-gradient">{Astro.props.title}</span>. Como
+  posso ajudar você hoje?
+</h1>
+<p class="instructions">
+  {Astro.props.instructions}
+</p>
