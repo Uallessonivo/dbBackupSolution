@@ -19,8 +19,9 @@
 </style>
 
 <h1>
-  Olá! Bem-vindo à <span class="text-gradient">{Astro.props.title}</span>. Como
-  posso ajudar você hoje?
+  {Astro.props.welcome}
+  <a href="/" class="text-gradient">{Astro.props.title}</a>
+  {Astro.props.message}
 </h1>
 <p class="instructions">
   {Astro.props.instructions}

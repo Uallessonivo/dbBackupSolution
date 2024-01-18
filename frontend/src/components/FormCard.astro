@@ -1,0 +1,111 @@
+---
+interface Props {
+  message?: string;
+  folder?: string;
+  comment?: string;
+  label?: string;
+}
+
+const { message, folder, comment, label } = Astro.props as Props;
+---
+
+<div class="card-centralizado">
+  <form method="POST">
+    {label && <p>{label}</p>}
+    {
+      message && (
+        <>
+          <>
+            <input
+              type="text"
+              id="mensagem"
+              name="mensagem"
+              placeholder={message}
+            />
+            <br />
+          </>
+        </>
+      )
+    }
+    {
+      folder && (
+        <>
+          <>
+            <input type="file" id="pasta" name="pasta" placeholder={folder} />
+            <br />
+          </>
+        </>
+      )
+    }
+    {
+      comment && (
+        <>
+          <>
+            <textarea id="comentario" name="comentario" placeholder={comment} />
+            <br />
+          </>
+        </>
+      )
+    }
+    <input type="submit" value="Enviar" />
+  </form>
+</div>
+
+<style>
+  .card-centralizado {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    padding: 1px;
+    background-color: #23262d;
+    background-image: none;
+    background-size: 400%;
+    border-radius: 7px;
+    background-position: 100%;
+    transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  form {
+    width: 50%; /* Reduz o tamanho do formulário para 50% da largura do contêiner */
+    height: 50%; /* Reduz o tamanho do formulário para 50% da altura do contêiner */
+    text-decoration: none;
+    line-height: 1.4;
+    padding: calc(1.5rem - 1px);
+    border-radius: 8px;
+    color: white;
+    background-color: #23262d;
+    opacity: 0.8;
+  }
+  p {
+    text-align: center;
+    font-size: 1.5em;
+    background: linear-gradient(45deg, #f3ec78, #af4261);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  label,
+  input,
+  textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px; /* Adiciona um pouco de padding aos campos de entrada */
+    border: none; /* Remove a borda dos campos de entrada */
+    background-color: #fff; /* Altera a cor de fundo dos campos de entrada */
+    color: #000; /* Altera a cor do texto dos campos de entrada */
+  }
+  input[type="submit"] {
+    cursor: pointer;
+    background: linear-gradient(45deg, #f3ec78, #af4261);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    width: 50%; /* Faz o botão ter a mesma largura do formulário */
+    margin: 0 auto; /* Centraliza o botão */
+  }
+</style>
