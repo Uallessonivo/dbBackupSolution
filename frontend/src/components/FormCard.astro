@@ -4,14 +4,27 @@ interface Props {
   folder?: string;
   comment?: string;
   label?: string;
+  files?: string[];
 }
 
-const { message, folder, comment, label } = Astro.props as Props;
+const { message, folder, comment, label, files } = Astro.props as Props;
 ---
 
 <div class="card-centralizado">
   <form method="POST">
     {label && <p>{label}</p>}
+    {
+      files && (
+        <div class="file-list">
+          {files.map((file) => (
+            <div class="file-list-item">
+              <p>{file}</p>
+              <input type="submit" value="Baixar" />
+            </div>
+          ))}
+        </div>
+      )
+    }
     {
       message && (
         <>
@@ -32,6 +45,7 @@ const { message, folder, comment, label } = Astro.props as Props;
         <>
           <>
             <input type="file" id="pasta" name="pasta" placeholder={folder} />
+            <input type="submit" value="Enviar" />
             <br />
           </>
         </>
@@ -47,7 +61,6 @@ const { message, folder, comment, label } = Astro.props as Props;
         </>
       )
     }
-    <input type="submit" value="Enviar" />
   </form>
 </div>
 
@@ -57,6 +70,7 @@ const { message, folder, comment, label } = Astro.props as Props;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     width: 100%;
     height: 100vh;
     padding: 1px;
@@ -68,6 +82,26 @@ const { message, folder, comment, label } = Astro.props as Props;
     transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   }
+
+  .file-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .file-list-item p {
+    margin-right: 20px; /* Adiciona uma margem à direita do nome do arquivo */
+  }
+
+  .file-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60%; /* Aumenta a largura para 60% */
+    margin: 10px auto 10px 20%; /* Adiciona uma margem automática à esquerda */
+  }
+
   form {
     width: 50%; /* Reduz o tamanho do formulário para 50% da largura do contêiner */
     height: 50%; /* Reduz o tamanho do formulário para 50% da altura do contêiner */
@@ -77,7 +111,12 @@ const { message, folder, comment, label } = Astro.props as Props;
     border-radius: 8px;
     color: white;
     background-color: #23262d;
-    opacity: 0.8;
+    margin: 20px auto; /* Adiciona uma margem ao redor do formulário e centraliza-o */
+  }
+  div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   p {
     text-align: center;
@@ -93,7 +132,7 @@ const { message, folder, comment, label } = Astro.props as Props;
     width: 100%;
     margin-bottom: 10px;
     padding: 10px; /* Adiciona um pouco de padding aos campos de entrada */
-    border: none; /* Remove a borda dos campos de entrada */
+    border-radius: 5px; /* Adiciona um pouco de arredondamento aos campos de entrada */
     background-color: #fff; /* Altera a cor de fundo dos campos de entrada */
     color: #000; /* Altera a cor do texto dos campos de entrada */
   }

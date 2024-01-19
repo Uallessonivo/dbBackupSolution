@@ -14,6 +14,11 @@ import WelcomeMessage from "../components/WelcomeMessage.astro";
     />
     <ul role="list" class="link-card-grid">
       <Card
+        href="/listar-arquivos"
+        title="Listar Arquivos"
+        body="Obtenha uma lista de todos os arquivos."
+      />
+      <Card
         href="/mover-arquivo"
         title="Mover Arquivo"
         body="Mova um arquivo para um novo local."
@@ -27,11 +32,6 @@ import WelcomeMessage from "../components/WelcomeMessage.astro";
         href="/upload-arquivo"
         title="Upload de Arquivo"
         body="Faça upload de um novo arquivo."
-      />
-      <Card
-        href="/enviar-arquivo"
-        title="Enviar Arquivo"
-        body="Envie um arquivo."
       />
       <Card
         href="/backup-arquivos"
@@ -64,11 +64,6 @@ import WelcomeMessage from "../components/WelcomeMessage.astro";
         body="Baixe um arquivo."
       />
       <Card
-        href="/listar-arquivos"
-        title="Listar Arquivos"
-        body="Obtenha uma lista de todos os arquivos."
-      />
-      <Card
         href="/salvar-modelo-agendador"
         title="Salvar Modelo de Agendador"
         body="Salve um novo modelo de agendador."
@@ -78,7 +73,6 @@ import WelcomeMessage from "../components/WelcomeMessage.astro";
         title="Obter Modelos de Agendador Salvos"
         body="Obtenha uma lista de modelos de agendador salvos."
       />
-
       <Card
         href="/atualizar-tarefas-agendadas"
         title="Atualizar Tarefas Agendadas"
