@@ -4,12 +4,12 @@ import WelcomeMessage from "../components/WelcomeMessage.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Enviar arquivo - Solução de Backup">
+<Layout title="Enviar arquivos - Solução de Backup">
   <main>
     <WelcomeMessage
       title="Solução de Backup"
-      instructions="Envie o arquivo para o servidor de backup"
+      instructions="Faça o upload dos arquivos que deseja fazer backup."
     />
-    <FormCard label="Enviar Arquivo" file />
+    <FormCard label="Enviar Arquivos" multipleSelection />
   </main>
 </Layout>

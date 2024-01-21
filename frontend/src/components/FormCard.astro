@@ -2,23 +2,31 @@
 interface Props {
   fileName?: string;
   destination?: string;
-  folder?: string;
+  file?: boolean;
+  multipleSelection?: boolean;
   comment?: string;
   label?: string;
-  files?: string[];
+  objects?: string[];
 }
 
-const { fileName, folder, comment, label, files, destination } =
-  Astro.props as Props;
+const {
+  fileName,
+  file,
+  multipleSelection,
+  comment,
+  label,
+  objects,
+  destination,
+} = Astro.props as Props;
 ---
 
 <div class="card-centralizado">
   <form method="POST">
     {label && <p>{label}</p>}
     {
-      files && (
+      objects && (
         <div class="file-list">
-          {files.map((file) => (
+          {objects.map((file) => (
             <div class="file-list-item">
               <p>{file}</p>
               <input type="submit" value="Baixar" />
@@ -59,10 +67,21 @@ const { fileName, folder, comment, label, files, destination } =
       )
     }
     {
-      folder && (
+      file && (
         <>
           <>
-            <input type="file" id="pasta" name="pasta" placeholder={folder} />
+            <input type="file" id="pasta" name="pasta" />
+            <input type="submit" value="Enviar" />
+            <br />
+          </>
+        </>
+      )
+    }
+    {
+      multipleSelection && (
+        <>
+          <>
+            <input type="file" id="pasta" name="pasta" multiple />
             <input type="submit" value="Enviar" />
             <br />
           </>
