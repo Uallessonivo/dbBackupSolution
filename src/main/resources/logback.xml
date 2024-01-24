@@ -1,0 +1,21 @@
+<configuration>
+    <property name="LOGS" value="./logs/service.log" />
+    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./logs/archived/service.%{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>1GB</totalSizeCap>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <logger name="com.project.dbbackupsolution" level="debug" additivity="false">
+            <appender-ref ref="FILE-ROLLING" />
+        </logger>
+        <root level="info">
+            <appender-ref ref="FILE-ROLLING" />
+        </root>
+    </appender>
+</configuration>
