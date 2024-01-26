@@ -1,5 +1,7 @@
 package com.project.dbbackupsolution.domain.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -14,6 +16,7 @@ import java.util.zip.ZipOutputStream;
 
 @Service
 public class FileServiceImpl implements FileService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileServiceImpl.class);
     private final StorageService storageService;
 
     public FileServiceImpl(StorageService storageService) {
@@ -25,6 +28,7 @@ public class FileServiceImpl implements FileService {
         File folder = new File(path);
 
         if (!folder.exists()) {
+            LOGGER.error("The path does not exist: {}", path);
             throw new IllegalArgumentException("The path does not exist");
         }
 
@@ -32,11 +36,13 @@ public class FileServiceImpl implements FileService {
         List<File> filesWithDesiredExtension = new ArrayList<>();
 
         if (listOfFiles == null || listOfFiles.length == 0) {
+            LOGGER.error("The path does not contain any files: {}", path);
             throw new IllegalArgumentException("The path does not contain any files");
         }
 
         for (File file : listOfFiles) {
             if (file.isFile() && file.getName().endsWith(fileExtension)) {
+                LOGGER.info("File with desired extension found: {}", file.getName());
                 filesWithDesiredExtension.add(file);
             }
         }
@@ -45,6 +51,7 @@ public class FileServiceImpl implements FileService {
         storageService.sendFile(compressedFiles, fileExtension);
 
         if (!compressedFiles.delete()) {
+            LOGGER.error("Failed to delete compressed files");
             throw new RuntimeException("Failed to delete compressed files");
         }
     }
@@ -71,10 +78,14 @@ public class FileServiceImpl implements FileService {
 
                     zipOS.closeEntry();
                 } catch (IOException e) {
+                    LOGGER.error("Failed to add file to zip", e);
                     throw new RuntimeException("Failed to add file to zip", e);
                 }
+                LOGGER.info("File added to zip: {}", file.getName());
             }
+            LOGGER.info("Files compressed successfully");
         } catch (IOException e) {
+            LOGGER.error("Failed to compress files", e);
             throw new RuntimeException("Failed to compress files", e);
         }
 
