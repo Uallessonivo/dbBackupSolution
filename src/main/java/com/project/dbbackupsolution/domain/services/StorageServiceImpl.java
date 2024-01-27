@@ -38,7 +38,7 @@ public class StorageServiceImpl implements StorageService {
         try {
             Blob file = copyObjectFromBucket(fileName, destinationPath);
             file.delete();
-            LOGGER.info("File {} moved successfully", fileName, destinationPath);
+            LOGGER.info("File {} moved to {} successfully", fileName, destinationPath);
         } catch (Exception e) {
             LOGGER.error("Error while moving file ", e);
             throw new DomainException("Error while moving file ", e.getCause());
@@ -51,7 +51,7 @@ public class StorageServiceImpl implements StorageService {
 
         try {
             copyObjectFromBucket(fileName, destinationPath);
-            LOGGER.info("File {} copied successfully", fileName, destinationPath);
+            LOGGER.info("File {} copied to {} successfully", fileName, destinationPath);
         } catch (Exception e) {
             LOGGER.error("Error while copying file ", e);
             throw new DomainException("Error while copying file ", e.getCause());
@@ -130,7 +130,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         if (!failedFiles.isEmpty()) {
-            LOGGER.error("Error while backing up files ", failedFiles);
+            LOGGER.error("Error while backing up files: {}", failedFiles);
             throw new FileException("Error occurred while backing up some files", failedFiles);
         }
 
@@ -175,7 +175,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         if (!failedFiles.isEmpty()) {
-            LOGGER.error("Error while deleting files ", failedFiles);
+            LOGGER.error("Error while deleting files: {}", failedFiles);
             throw new FileException("Error occurred while deleting some files", failedFiles);
         }
 
@@ -206,7 +206,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         if (!failedFiles.isEmpty()) {
-            LOGGER.error("Error while deleting files ", failedFiles);
+            LOGGER.error("Error while deleting files: {}", failedFiles);
             throw new FileException("Error occurred while deleting some files", failedFiles);
         }
 
@@ -242,7 +242,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         if (!failedFiles.isEmpty()) {
-            LOGGER.error("Error while deleting files ", failedFiles);
+            LOGGER.error("Error while deleting files: {}", failedFiles);
             throw new FileException("Error occurred while deleting some files", failedFiles);
         }
 
