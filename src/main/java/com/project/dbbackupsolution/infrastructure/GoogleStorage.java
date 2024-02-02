@@ -5,11 +5,10 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.project.dbbackupsolution.configuration.LoadGoogleStorageConfigs;
 import com.project.dbbackupsolution.domain.exceptions.DomainException;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 @Component
 public class GoogleStorage {
@@ -20,7 +19,8 @@ public class GoogleStorage {
     }
 
     public Storage getStorage() {
-        try (InputStream serviceAccountStream = new ClassPathResource("gcp_account_file.json").getInputStream()) {
+        try {
+            FileInputStream serviceAccountStream = new FileInputStream(storageConfig.getCredentials());
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccountStream)
                     .createScoped("https://www.googleapis.com/auth/cloud-platform");
 
