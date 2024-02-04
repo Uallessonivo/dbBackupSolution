@@ -34,9 +34,9 @@ Schedule the execution of the backup agent to run daily, after generating databa
 
 ### Security and Audit
 
-Ensure that backups are encrypted during the upload process. Maintain detailed logs of backup operations for auditing purposes.
+(Coming soon).
 
 ### Monitoring and Scalability
 
-Implement a monitoring system to track cloud storage space, associated costs, and solution performance. Ensure the solution is scalable.
+(Coming soon).
 
