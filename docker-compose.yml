@@ -1,14 +1,15 @@
-version: "3"
+version: '3'
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  app:
+    container_name: backup_solution_container
+    image: uallessonivo/db-backup-solution:agrocape
     ports:
       - "8080:8080"
-    env_file:
-      - .env
-  frontend:
-    build: ./frontend
-    ports:
-      - "9090:9090"
+    environment:
+      - SPRING_CLOUD_GCP_STORAGE_ENABLED
+      - GOOGLE_STORAGE_PROJECT_ID
+      - GOOGLE_STORAGE_BUCKET_NAME
+      - GOOGLE_APPLICATION_CREDENTIALS
+      - GOOGLE_APPLICATION_BACKUP_PATH
+    volumes:
+      - D:/DATA/BACKUPSOLUTION:/data

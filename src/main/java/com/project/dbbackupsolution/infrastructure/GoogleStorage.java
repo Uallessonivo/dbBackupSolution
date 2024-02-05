@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class GoogleStorage {
@@ -20,9 +21,9 @@ public class GoogleStorage {
 
     public Storage getStorage() {
         try {
-            FileInputStream serviceAccountStream = new FileInputStream(storageConfig.getCredentials());
-            GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccountStream)
-                    .createScoped("https://www.googleapis.com/auth/cloud-platform");
+            String credentialsPath = storageConfig.getCredentialsPath();
+            GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(credentialsPath))
+                    .createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
 
             return StorageOptions.newBuilder()
                     .setProjectId(storageConfig.getProjectId())
