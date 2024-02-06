@@ -35,7 +35,8 @@ build/
 *.json
 
 ## Environment ##
-.env
+.docker/.env
+*.env
 
 ## Logs ##
 logs
