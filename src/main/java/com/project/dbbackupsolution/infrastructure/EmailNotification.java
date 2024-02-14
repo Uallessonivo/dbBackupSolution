@@ -16,10 +16,10 @@ public class EmailNotification {
         this.emailNotificationConfig = emailNotificationConfig;
     }
 
-    public void sendEmail(String to, String subject, String text) {
+    public void sendEmail(String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(emailNotificationConfig.getUsername());
-        message.setTo(to);
+        message.setTo(emailNotificationConfig.getDestinationEmail());
         message.setSubject(subject);
         message.setText(text);
         emailSender.send(message);

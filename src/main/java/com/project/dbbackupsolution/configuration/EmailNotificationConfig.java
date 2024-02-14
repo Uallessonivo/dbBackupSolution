@@ -17,6 +17,8 @@ public class EmailNotificationConfig {
     private String username;
     @Value("${mail.smtp.password}")
     private String password;
+    @Value("${mail.smtp.destinationEmail}")
+    private String destinationEmail;
 
     public Properties getProperties() {
         Properties properties = new Properties();

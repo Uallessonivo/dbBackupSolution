@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import com.project.dbbackupsolution.domain.models.SchedulerModel;
 import com.project.dbbackupsolution.domain.models.TaskType;
+import com.project.dbbackupsolution.infrastructure.EmailNotification;
 import jakarta.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -24,15 +25,17 @@ public class SchedulerService {
     private final FileService fileService;
     private final TaskScheduler taskScheduler;
     private final SchedulerManager schedulerManager;
+    private final EmailNotification emailNotification;
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerService.class);
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
     public SchedulerService(StorageService storageService, FileService fileService, TaskScheduler taskScheduler,
-            SchedulerManager schedulerManager) {
+                            SchedulerManager schedulerManager, EmailNotification emailNotification) {
         this.storageService = storageService;
         this.fileService = fileService;
         this.taskScheduler = taskScheduler;
         this.schedulerManager = schedulerManager;
+        this.emailNotification = emailNotification;
     }
 
     @PostConstruct
@@ -59,20 +62,59 @@ public class SchedulerService {
     private Runnable createRunnableTask(SchedulerModel task) {
         LOGGER.info("Creating runnable task: {}", task.getTaskType());
         Runnable runnableTask = switch (task.getTaskType()) {
-            case TaskType.FILE_MOVE -> () -> storageService.moveFile(task.getSourcePath(), task.getDestinationPath());
-            case TaskType.FILE_COPY -> () -> storageService.copyFile(task.getSourcePath(), task.getDestinationPath());
-            case TaskType.FILES_UPLOAD -> () -> {
-                for (String path : task.getSourcePaths()) {
-                    for (String extension : task.getFileExtensions()) {
-                        fileService.sendFileToStorage(path, extension);
-                    }
+            case TaskType.FILE_MOVE -> () -> {
+                try {
+                    storageService.moveFile(task.getSourcePath(), task.getDestinationPath());
+                    emailNotification.sendEmail("File Move Scheduler", "File moved successfully");
+                } catch (Exception e) {
+                    emailNotification.sendEmail("File Move Scheduler", "Error moving file: " + e.getMessage());
                 }
             };
-            case TaskType.DELETE_OLD_FILES -> () -> storageService.deleteOldFiles(task.getNumberOfDays());
-            case TaskType.DELETE_ALL_BY_EXTENSION ->
-                () -> storageService.deleteAllFilesByExtension(task.getFileExtension());
-            case TaskType.DELETE_ALL_OLD_BY_EXTENSION ->
-                () -> storageService.deleteAllOldFilesByExtension(task.getNumberOfDays(), task.getFileExtension());
+            case TaskType.FILE_COPY -> () -> {
+                try {
+                    storageService.copyFile(task.getSourcePath(), task.getDestinationPath());
+                    emailNotification.sendEmail("File Copy Scheduler", "File copied successfully");
+                } catch (Exception e) {
+                    emailNotification.sendEmail("File Copy Scheduler", "Error copying file: " + e.getMessage());
+                }
+            };
+            case TaskType.FILES_UPLOAD -> () -> {
+                try {
+                    for (String path : task.getSourcePaths()) {
+                        for (String extension : task.getFileExtensions()) {
+                            fileService.sendFileToStorage(path, extension);
+                        }
+                    }
+                    emailNotification.sendEmail("File Upload Scheduler", "Files uploaded successfully");
+                } catch (Exception e) {
+                    emailNotification.sendEmail("File Upload Scheduler", "Error uploading files: " + e.getMessage());
+                }
+            };
+            case TaskType.DELETE_OLD_FILES -> () -> {
+                try {
+                    storageService.deleteOldFiles(task.getNumberOfDays());
+                    emailNotification.sendEmail("Delete Old Files Scheduler", "Old files deleted successfully");
+                } catch (Exception e) {
+                    emailNotification.sendEmail("Delete Old Files Scheduler", "Error deleting old files: " + e.getMessage());
+                }
+            };
+            case TaskType.DELETE_ALL_BY_EXTENSION -> () -> {
+                try {
+                    storageService.deleteAllFilesByExtension(task.getFileExtension());
+                    emailNotification.sendEmail("Delete All Files By Extension Scheduler", "Files deleted successfully");
+                } catch (Exception e) {
+                    emailNotification.sendEmail("Delete All Files By Extension Scheduler", "Error deleting files: " + e.getMessage());
+                }
+
+            };
+            case TaskType.DELETE_ALL_OLD_BY_EXTENSION -> () -> {
+                try {
+                    storageService.deleteAllOldFilesByExtension(task.getNumberOfDays(), task.getFileExtension());
+                    emailNotification.sendEmail("Delete All Old Files By Extension Scheduler", "Old files deleted successfully");
+                } catch (Exception e) {
+                    emailNotification.sendEmail("Delete All Old Files By Extension Scheduler", "Error deleting old files: " + e.getMessage());
+                }
+            };
             default -> throw new IllegalStateException("Unexpected value: " + task.getTaskType());
         };
         LOGGER.info("Runnable task created successfully: {}", task.getTaskType());

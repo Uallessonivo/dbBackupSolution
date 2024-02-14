@@ -15,6 +15,7 @@ services:
       - mail.smtp.port=${mail.smtp.port}
       - mail.smtp.username=${mail.smtp.username}
       - mail.smtp.password=${mail.smtp.password}
+      - mail.smtp.destinationEmail=${mail.smtp.destinationEmail}
     volumes:
       - "./data:/data"
       - "D:/PROJETOS/dbBackupSolution:/credentials"
