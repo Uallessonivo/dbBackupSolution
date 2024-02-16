@@ -2,7 +2,7 @@ version: '3'
 services:
   app:
     container_name: backup_solution_container
-    image: uallessonivo/db-backup-solution:agrocape
+    image: uallessonivo/db-backup-solution:latest
     ports:
       - "8080:8080"
     environment:
@@ -11,6 +11,11 @@ services:
       - GOOGLE_STORAGE_BUCKET_NAME=${GOOGLE_STORAGE_BUCKET_NAME}
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/gcp_account_file.json
       - GOOGLE_APPLICATION_BACKUP_PATH=${GOOGLE_APPLICATION_BACKUP_PATH}
+      - MAIL.SMTP.HOST=${MAIL.SMTP.HOST}
+      - MAIL.SMTP.PORT=${MAIL.SMTP.PORT}
+      - MAIL.SMTP.USERNAME=${MAIL.SMTP.USERNAME}
+      - MAIL.SMTP.PASSWORD=${MAIL.SMTP.PASSWORD}
+      - MAIL.SMTP.DESTINATIONEMAIL=${MAIL.SMTP.DESTINATIONEMAIL}
     volumes:
       - "./data:/data"
       - "D:/PROJETOS/dbBackupSolution:/credentials"
