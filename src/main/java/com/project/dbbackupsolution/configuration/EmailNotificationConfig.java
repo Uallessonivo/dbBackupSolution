@@ -2,31 +2,42 @@ package com.project.dbbackupsolution.configuration;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
 @Getter
 @Configuration
 public class EmailNotificationConfig {
-    @Value("${mail.smtp.host}")
+    @Value("${MAIL.SMTP.HOST}")
     private String host;
-    @Value("${mail.smtp.port}")
-    private String port;
-    @Value("${mail.smtp.username}")
+    @Value("${MAIL.SMTP.PORT}")
+    private int port;
+    @Value("${MAIL.SMTP.USERNAME}")
     private String username;
-    @Value("${mail.smtp.password}")
+    @Value("${MAIL.SMTP.PASSWORD}")
     private String password;
-    @Value("${mail.smtp.destinationEmail}")
+    @Value("${MAIL.SMTP.DESTINATIONEMAIL}")
     private String destinationEmail;
 
-    public Properties getProperties() {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.port", port);
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.ssl.trust", "*");
-        return properties;
+    @Bean
+    public JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(host);
+        mailSender.setPort(port);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
     }
 }

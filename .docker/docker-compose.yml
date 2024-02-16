@@ -11,11 +11,11 @@ services:
       - GOOGLE_STORAGE_BUCKET_NAME=${GOOGLE_STORAGE_BUCKET_NAME}
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/gcp_account_file.json
       - GOOGLE_APPLICATION_BACKUP_PATH=${GOOGLE_APPLICATION_BACKUP_PATH}
-      - mail.smtp.host=${mail.smtp.host}
-      - mail.smtp.port=${mail.smtp.port}
-      - mail.smtp.username=${mail.smtp.username}
-      - mail.smtp.password=${mail.smtp.password}
-      - mail.smtp.destinationEmail=${mail.smtp.destinationEmail}
+      - MAIL.SMTP.HOST=${MAIL.SMTP.HOST}
+      - MAIL.SMTP.PORT=${MAIL.SMTP.PORT}
+      - MAIL.SMTP.USERNAME=${MAIL.SMTP.USERNAME}
+      - MAIL.SMTP.PASSWORD=${MAIL.SMTP.PASSWORD}
+      - MAIL.SMTP.DESTINATIONEMAIL=${MAIL.SMTP.DESTINATIONEMAIL}
     volumes:
       - "./data:/data"
       - "D:/PROJETOS/dbBackupSolution:/credentials"

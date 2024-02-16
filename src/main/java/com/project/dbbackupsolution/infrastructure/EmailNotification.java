@@ -1,7 +1,6 @@
 package com.project.dbbackupsolution.infrastructure;
 
 import com.project.dbbackupsolution.configuration.EmailNotificationConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -9,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailNotification {
     private final EmailNotificationConfig emailNotificationConfig;
-    @Autowired
-    private JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
 
-    public EmailNotification(EmailNotificationConfig emailNotificationConfig) {
+    public EmailNotification(EmailNotificationConfig emailNotificationConfig, JavaMailSender emailSender) {
         this.emailNotificationConfig = emailNotificationConfig;
+        this.emailSender = emailSender;
     }
 
     public void sendEmail(String subject, String text) {
