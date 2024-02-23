@@ -108,6 +108,38 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public void sendFiles(List<File> files, String fileExtension) {
+        if (files == null) {
+            throw new IllegalArgumentException("File or filename cannot be null");
+        }
+
+        LOGGER.info("Sending files with desired extension: {}", fileExtension);
+
+        for (File file : files) {
+            try {
+                String fileName = file.getName();
+                String fullPath = String.format("%s/%s/%s", fileExtension, getCurrentMonthAndYear(), fileName);
+                BlobId blobId = BlobId.of(storageConfig.getBucketName(), fullPath);
+                BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+
+                byte[] bytesArray = new byte[(int) file.length()];
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    int bytesRead = fis.read(bytesArray);
+                    if (bytesRead != file.length()) {
+                        throw new FileException("Failed to read the entire files: ", fileName);
+                    }
+                }
+
+                storage.create(blobInfo, bytesArray);
+                LOGGER.info("File {} sent successfully", file.getName());
+            } catch (Exception e) {
+                LOGGER.error("Error while sending files ", e);
+                throw new FileException("Error occurred while sending files: ", file.getName());
+            }
+        }
+    }
+
+    @Override
     public void backupFiles(MultipartFile[] files) {
         LOGGER.info("Backing up {} files", files.length);
         List<String> failedFiles = new ArrayList<>();
