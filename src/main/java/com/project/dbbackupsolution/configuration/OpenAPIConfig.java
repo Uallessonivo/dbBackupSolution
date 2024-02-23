@@ -12,13 +12,9 @@ import java.util.List;
 
 @Configuration
 public class OpenAPIConfig {
-    @Value("${dbbackupsolution.openapi.dev-url}")
-    public String devUrl;
-
     @Bean
     public OpenAPI customOpenAPI() {
         Server devServer = new Server();
-        devServer.setUrl(devUrl);
         devServer.setDescription("Development Server");
 
         return new OpenAPI()

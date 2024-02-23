@@ -11,6 +11,7 @@ public interface StorageService {
     void copyFile(String fileName, String destinationPath);
     void uploadFile(MultipartFile file);
     void sendFile(File file, String fileExtension);
+    void sendFiles(List<File> files, String fileExtension);
     void backupFiles(MultipartFile[] files);
     void deleteFile(String fileName);
     void deleteOldFiles(int numberOfDays);

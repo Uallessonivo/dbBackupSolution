@@ -47,12 +47,16 @@ public class FileServiceImpl implements FileService {
             }
         }
 
-        File compressedFiles = compressFiles(filesWithDesiredExtension);
-        storageService.sendFile(compressedFiles, fileExtension);
+        if (fileExtension.equals(".zip") || fileExtension.equals(".rar")) {
+            storageService.sendFiles(filesWithDesiredExtension, fileExtension);
+        } else {
+            File compressedFiles = compressFiles(filesWithDesiredExtension);
+            storageService.sendFile(compressedFiles, fileExtension);
 
-        if (!compressedFiles.delete()) {
-            LOGGER.error("Failed to delete compressed files");
-            throw new RuntimeException("Failed to delete compressed files");
+            if (!compressedFiles.delete()) {
+                LOGGER.error("Failed to delete compressed files");
+                throw new RuntimeException("Failed to delete compressed files");
+            }
         }
     }
 
