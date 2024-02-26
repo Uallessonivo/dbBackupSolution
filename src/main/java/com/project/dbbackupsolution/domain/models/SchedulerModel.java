@@ -21,6 +21,11 @@ public class SchedulerModel {
     private String destinationPath;
     private String cronExpression;
     private TaskType taskType;
+    private boolean useDateOnPath;
+    private String dateFormat;
+    private String timeZone;
+    private String baseFilePath;
+    private String finalFilePath;
 
     @JsonCreator
     public SchedulerModel(@JsonProperty("numberOfDays") int numberOfDays,
@@ -30,7 +35,12 @@ public class SchedulerModel {
                           @JsonProperty("sourcePaths") List<String> sourcePaths,
                           @JsonProperty("destinationPath") String destinationPath,
                           @JsonProperty("cronExpression") String cronExpression,
-                          @NotNull @JsonProperty("taskType") String taskType) {
+                          @NotNull @JsonProperty("taskType") String taskType,
+                          @JsonProperty("useDateOnPath") boolean useDateOnPath,
+                          @JsonProperty("dateFormat") String dateFormat,
+                          @JsonProperty("timeZone") String timeZone,
+                          @JsonProperty("baseFilePath") String baseFilePath,
+                          @JsonProperty("finalFilePath") String finalFilePath) {
         this.numberOfDays = numberOfDays;
         this.fileExtension = fileExtension;
         this.fileExtensions = fileExtensions;
@@ -39,5 +49,10 @@ public class SchedulerModel {
         this.destinationPath = destinationPath;
         this.cronExpression = cronExpression;
         this.taskType = TaskType.valueOf(taskType.toUpperCase());
+        this.useDateOnPath = useDateOnPath;
+        this.dateFormat = dateFormat;
+        this.timeZone = timeZone;
+        this.baseFilePath = baseFilePath;
+        this.finalFilePath = finalFilePath;
     }
 }
