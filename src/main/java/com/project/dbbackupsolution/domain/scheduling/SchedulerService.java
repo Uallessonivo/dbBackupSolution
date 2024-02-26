@@ -1,5 +1,9 @@
 package com.project.dbbackupsolution.domain.scheduling;
 
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import com.project.dbbackupsolution.domain.services.FileService;
 import com.project.dbbackupsolution.domain.services.StorageService;
+
+import static org.apache.tomcat.util.http.FastHttpDateFormat.getCurrentDate;
 
 @Service
 public class SchedulerService {
@@ -96,6 +102,29 @@ public class SchedulerService {
                     emailNotification.sendEmail("File Upload Scheduler", emailBody);
                 }
             };
+            case TaskType.BACKUP_DATABASE -> () -> {
+                String fullPath;
+                String date = getCurrentDate(task.getDateFormat(), task.getTimeZone());
+
+                if (task.isUseDateOnPath()) {
+                    fullPath = Paths.get(task.getBaseFilePath(), date, task.getFinalFilePath()).toString();
+                } else {
+                    fullPath = Paths.get(task.getSourcePath()).toString();
+                }
+
+                try {
+                    for (String extension : task.getFileExtensions()) {
+                            fileService.sendFileToStorage(fullPath, extension);
+                    }
+                    String emailBody = String.format("Database files uploaded successfully, path: %s, with extensions: %s",
+                            fullPath, task.getFileExtensions());
+                    emailNotification.sendEmail("Backup Database Scheduler", emailBody);
+                } catch (Exception e) {
+                    String emailBody = String.format("Error uploading files from : %s, with extensions: %s, with error: %s",
+                            fullPath, task.getFileExtensions(), e.getMessage());
+                    emailNotification.sendEmail("Backup Database Scheduler", emailBody);
+                }
+            };
             case TaskType.DELETE_OLD_FILES -> () -> {
                 try {
                     storageService.deleteOldFiles(task.getNumberOfDays());
@@ -131,6 +160,11 @@ public class SchedulerService {
         };
         LOGGER.info("Runnable task created successfully: {}", task.getTaskType());
         return runnableTask;
+    }
+
+    private String getCurrentDate(String dateFormat, String timezone) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+        return LocalDate.now(ZoneId.of(timezone)).format(formatter);
     }
 
     public void rescheduleTask(SchedulerModel task) {
