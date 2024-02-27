@@ -112,9 +112,14 @@ public class SchedulerService {
                     fullPath = Paths.get(task.getSourcePath()).toString();
                 }
 
+                if (task.isUseBackslash()) {
+                    fullPath = fullPath.replace("/", "\\");
+                }
+
                 try {
                     for (String extension : task.getFileExtensions()) {
-                            fileService.sendFileToStorage(fullPath, extension);
+                        System.out.println("fullPath: " + fullPath + " extension: " + extension);
+                        fileService.sendFileToStorage(fullPath, extension);
                     }
                     String emailBody = String.format("Database files uploaded successfully, path: %s, with extensions: %s",
                             fullPath, task.getFileExtensions());

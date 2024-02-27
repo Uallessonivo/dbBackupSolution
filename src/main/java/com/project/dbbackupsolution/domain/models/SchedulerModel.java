@@ -22,6 +22,7 @@ public class SchedulerModel {
     private String cronExpression;
     private TaskType taskType;
     private boolean useDateOnPath;
+    private boolean useBackslash;
     private String dateFormat;
     private String timeZone;
     private String baseFilePath;
@@ -37,6 +38,7 @@ public class SchedulerModel {
                           @JsonProperty("cronExpression") String cronExpression,
                           @NotNull @JsonProperty("taskType") String taskType,
                           @JsonProperty("useDateOnPath") boolean useDateOnPath,
+                          @JsonProperty("useBackslash") boolean useBackslash,
                           @JsonProperty("dateFormat") String dateFormat,
                           @JsonProperty("timeZone") String timeZone,
                           @JsonProperty("baseFilePath") String baseFilePath,
@@ -50,6 +52,7 @@ public class SchedulerModel {
         this.cronExpression = cronExpression;
         this.taskType = TaskType.valueOf(taskType.toUpperCase());
         this.useDateOnPath = useDateOnPath;
+        this.useBackslash = useBackslash;
         this.dateFormat = dateFormat;
         this.timeZone = timeZone;
         this.baseFilePath = baseFilePath;
