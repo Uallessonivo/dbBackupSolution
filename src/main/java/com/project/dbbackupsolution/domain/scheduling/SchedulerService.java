@@ -118,7 +118,6 @@ public class SchedulerService {
 
                 try {
                     for (String extension : task.getFileExtensions()) {
-                        System.out.println("fullPath: " + fullPath + " extension: " + extension);
                         fileService.sendFileToStorage(fullPath, extension);
                     }
                     String emailBody = String.format("Database files uploaded successfully, path: %s, with extensions: %s",
